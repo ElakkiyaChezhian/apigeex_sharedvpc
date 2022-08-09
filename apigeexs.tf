@@ -66,13 +66,13 @@ resource "google_compute_forwarding_rule" "apigee_ilb_target_service1" {
    backend_service       = google_compute_region_backend_service.producer_service_backend1.id
    all_ports             = true
    network               = google_compute_network.apigee_network1.id
-   //subnetwork            =    "projects/${google_compute_network.apigee_network.id}/regions/us-east1/subnetworks/prv-sn-1"
+   //subnetwork            =    "projects/${google_compute_network.apigee_network1.id}/regions/us-east1/subnetworks/prv-sn-1"
 }
 resource "google_compute_subnetwork" "psc_ilb_nat" {
   name          = var.google_compute_subnetwork
   region        = var.region
   project       = var.project_id
-  network       = google_compute_network.apigee_network.id
+  network       = google_compute_network.apigee_network1.id
   purpose       = "PRIVATE_SERVICE_CONNECT"
   ip_cidr_range = "10.56.0.0/22"
 }
