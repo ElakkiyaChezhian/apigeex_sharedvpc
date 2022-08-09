@@ -1,6 +1,9 @@
 variable "project_id" {
     type= string
 }
+variable "project_id2"{
+    type = string
+}
 variable "network" {
   type = string
 }
@@ -29,5 +32,8 @@ variable "google_compute_health_check" {
     type = string
 }
 variable "google_compute_forwarding_rule" {
+    type = string
+}
+variable "google_compute_service_attachment"{
     type = string
 }
