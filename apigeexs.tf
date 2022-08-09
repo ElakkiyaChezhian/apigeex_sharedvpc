@@ -90,3 +90,4 @@ resource "google_compute_health_check" "producer_service_health_check1" {
   tcp_health_check {
     port = "80"
   }
+}
