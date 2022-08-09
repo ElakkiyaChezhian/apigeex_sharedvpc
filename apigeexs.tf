@@ -60,7 +60,7 @@ resource "google_apigee_instance_attachment" "apigee_instance_attachment1" {
 }
 resource "google_apigee_organization" "apigee_org" {
     authorized_network = google_compute_network.apigee_network1.id
-    project            = var.project_id2
+    project_id        = var.project_id2
 }
 
 # Forwarding rule in the Shared VPC host project
@@ -81,8 +81,17 @@ resource "google_compute_service_attachment" "psc_ilb_service_attachment" {
    project               = google_compute_network.apigee_network1.id
    enable_proxy_protocol = true
    connection_preference = "ACCEPT_AUTOMATIC"
+   nat_subnets           = [google_compute_subnetwork.psc_ilb_nat.id]
    target_service        = google_compute_forwarding_rule.apigee_ilb_target_service.id
  }
+resource "google_compute_subnetwork" "psc_ilb_nat" {
+  name          = var.google_compute_subnetwork
+  region        = var.region
+  project       = var.project_id
+  network       = google_compute_network.apigee_network1.id
+  purpose       = "PRIVATE_SERVICE_CONNECT"
+  ip_cidr_range = "10.56.0.0/22"
+}
 # Define regionally scoped of VMs which serve traffic for LB
 resource "google_compute_region_backend_service" "producer_service_backend" {
   name          = var.google_compute_region_backend_service
