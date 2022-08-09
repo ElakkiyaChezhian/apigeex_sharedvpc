@@ -58,33 +58,42 @@ resource "google_apigee_instance_attachment" "apigee_instance_attachment1" {
   instance_id  = google_apigee_instance.apigee_instance1.id
   environment  = google_apigee_environment.apigee_org_region_env1.name
 }
-resource "google_compute_forwarding_rule" "apigee_ilb_target_service1" {
+resource "google_apigee_organization" "apigee_org" {
+    authorized_network = google_compute_network.apigee_network1.id
+    project            = var.project_id2
+}
+
+# Forwarding rule in the Shared VPC host project
+resource "google_compute_forwarding_rule" "apigee_ilb_target_service" {
    name                  = var.google_compute_forwarding_rule
    region                = var.region
-   project               = var.project_id
+   project               = var.project_id2
    load_balancing_scheme = "INTERNAL"
-   backend_service       = google_compute_region_backend_service.producer_service_backend1.id
+   backend_service       = google_compute_region_backend_service.producer_service_backend.id
    all_ports             = true
    network               = google_compute_network.apigee_network1.id
-   //subnetwork            =    "projects/${google_compute_network.apigee_network1.id}/regions/us-east1/subnetworks/prv-sn-1"
 }
-resource "google_compute_subnetwork" "psc_ilb_nat" {
-  name          = var.google_compute_subnetwork
-  region        = var.region
-  project       = var.project_id
-  network       = google_compute_network.apigee_network1.id
-  purpose       = "PRIVATE_SERVICE_CONNECT"
-  ip_cidr_range = "10.56.0.0/22"
-}
-resource "google_compute_region_backend_service" "producer_service_backend1" {
+
+# PSC attachment on the Shared VPC network host project which allow to that subnetwok reach iLB exposed by Apigee X
+resource "google_compute_service_attachment" "psc_ilb_service_attachment" {
+   name                  = var.google_compute_service_attachment
+   region                = var.region
+   project               = google_compute_network.apigee_network1.id
+   enable_proxy_protocol = true
+   connection_preference = "ACCEPT_AUTOMATIC"
+   target_service        = google_compute_forwarding_rule.apigee_ilb_target_service.id
+ }
+# Define regionally scoped of VMs which serve traffic for LB
+resource "google_compute_region_backend_service" "producer_service_backend" {
   name          = var.google_compute_region_backend_service
-  project       = var.project_id
+  project       = var.project_id2
   region        = var.region
-  health_checks = [google_compute_health_check.producer_service_health_check1.id]
+  health_checks = [google_compute_health_check.producer_service_health_check.id]
 }
-resource "google_compute_health_check" "producer_service_health_check1" {
+# Poll instances and flag as unhealthy to those ones which are not respond after some retries
+resource "google_compute_health_check" "producer_service_health_check" {
   name                = var.google_compute_health_check
-  project             = var.project_id
+  project             = var.project_id2
   check_interval_sec  = 1
   timeout_sec         = 1
   tcp_health_check {
