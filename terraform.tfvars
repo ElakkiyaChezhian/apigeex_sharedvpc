@@ -3,6 +3,7 @@ project_id2="spatial-ship-354209"
 network = "shared-network"
 google_compute_global_address="shared-range"
 region="us-east1"
+display_name="wf-
 google_apigee_environment="shared-env-dev"
 google_apigee_envgroup="shared-dev-internal"
 google_apigee_instance="shared-org-instance-us-east1"
