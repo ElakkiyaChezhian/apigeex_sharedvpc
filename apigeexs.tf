@@ -30,6 +30,7 @@ resource "google_project_service" "apis" {
      disable_on_destroy = false
      }
 resource "google_apigee_organization" "apigeex_org" { 
+  display_name       = var.displayname
   analytics_region   = var.region
   project_id         = var.project_id
   authorized_network = google_compute_network.apigee_network1.id
