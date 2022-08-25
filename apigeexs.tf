@@ -80,7 +80,7 @@ resource "google_compute_forwarding_rule" "apigee_ilb_target_service" {
 resource "google_compute_service_attachment" "psc_ilb_service_attachment" {
    name                  = var.google_compute_service_attachment
    region                = var.region
-   project               = google_compute_network.apigee_network1.id
+   project               = data.google_compute_network.shared_vpc.id
    enable_proxy_protocol = true
    connection_preference = "ACCEPT_AUTOMATIC"
    nat_subnets           = [google_compute_subnetwork.psc_ilb_nat.id]
