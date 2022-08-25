@@ -61,7 +61,7 @@ resource "google_apigee_instance_attachment" "apigee_instance_attachment1" {
   environment  = google_apigee_environment.apigee_org_region_env1.name
 }
 resource "google_apigee_organization" "apigee_org" {
-    authorized_network = google_compute_network.apigee_network1.id
+    authorized_network = data.google_compute_network.shared_vpc.id
     project_id        = var.project_id2
 }
 
@@ -73,7 +73,7 @@ resource "google_compute_forwarding_rule" "apigee_ilb_target_service" {
    load_balancing_scheme = "INTERNAL"
    backend_service       = google_compute_region_backend_service.producer_service_backend.id
    all_ports             = true
-   network               = google_compute_network.apigee_network1.id
+   network               = data.google_compute_network.shared_vpc.id
 }
 
 # PSC attachment on the Shared VPC network host project which allow to that subnetwok reach iLB exposed by Apigee X
@@ -90,7 +90,7 @@ resource "google_compute_subnetwork" "psc_ilb_nat" {
   name          = var.google_compute_subnetwork
   region        = var.region
   project       = var.project_id
-  network       = google_compute_network.apigee_network1.id
+  network       = data.google_compute_network.shared_vpc.id
   purpose       = "PRIVATE_SERVICE_CONNECT"
   ip_cidr_range = "10.56.0.0/22"
 }
