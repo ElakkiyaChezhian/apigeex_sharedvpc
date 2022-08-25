@@ -1,15 +1,15 @@
 provider "google" {
     project = var.project_id
 }
-resource "google_compute_network" "apigee_network1" {
-  name       = var.network
+data "google_compute_network" "my-network" {
+  name = "default-us-east1"
 }
 resource "google_compute_global_address" "apigee_range1" {
   name          = var.google_compute_global_address
   purpose       = "VPC_PEERING"
   address_type  = "INTERNAL"
   prefix_length = 16
-  network       = google_compute_network.apigee_network1.id
+  network       = google_compute_network.ap
 }
 resource "google_service_networking_connection" "apigee_vpc_connection" {
   network                 = google_compute_network.apigee_network1.id
