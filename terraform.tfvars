@@ -1,6 +1,6 @@
 project_id = "internal-test-prj-ly"
 project_id2="spatial-ship-354209"
-network = "updated-network2"
+google_compute_network = "updated-network2"
 google_compute_global_address="updated-range"
 region="us-east1"
 display_name="wf-us-prod-agx-app01-org1"
