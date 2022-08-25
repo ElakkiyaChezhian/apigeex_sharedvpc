@@ -4,7 +4,7 @@ variable "project_id" {
 variable "project_id2"{
     type = string
 }
-variable "network" {
+variable "google_compute_network" {
   type = string
 }
 variable "google_compute_global_address" {
